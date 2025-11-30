@@ -23,20 +23,18 @@ const HeroSection = () => {
   const fetchData = async () => {
     try {
       const [{ data: hero }, { data: heroCards }] = await Promise.all([
-        supabase.from("hero_section").select("*").single(),
+        supabase.from("hero_section").select("*").maybeSingle(),
         supabase.from("hero_cards").select("*").order("display_order"),
       ]);
 
       if (hero) setHeroData(hero);
       if (heroCards) setCards(heroCards);
     } catch (error: any) {
-      if (!error.message.includes("no rows")) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to load hero section",
-        });
-      }
+      toast({
+        variant: "destructive",
+        title: "Error loading data",
+        description: error.message || "Failed to load hero section",
+      });
     } finally {
       setLoading(false);
     }
@@ -53,17 +51,22 @@ const HeroSection = () => {
         hero_image_url: heroData?.hero_image_url || "",
       };
 
-      if (heroData?.id) {
-        await supabase.from("hero_section").update(heroPayload).eq("id", heroData.id);
+      let currentHeroId = heroData?.id;
+
+      if (currentHeroId) {
+        const { error } = await supabase.from("hero_section").update(heroPayload).eq("id", currentHeroId);
+        if (error) throw error;
       } else {
-        const { data } = await supabase.from("hero_section").insert(heroPayload).select().single();
+        const { data, error } = await supabase.from("hero_section").insert(heroPayload).select().single();
+        if (error) throw error;
+        currentHeroId = data.id;
         setHeroData(data);
       }
 
-      // Save cards
+      // Save cards with the correct hero_id
       for (const card of cards) {
         const cardPayload = {
-          hero_id: heroData?.id,
+          hero_id: currentHeroId,
           icon_name: card.icon_name,
           subtitle: card.subtitle,
           title: card.title,
@@ -71,21 +74,26 @@ const HeroSection = () => {
         };
 
         if (card.id) {
-          await supabase.from("hero_cards").update(cardPayload).eq("id", card.id);
+          const { error } = await supabase.from("hero_cards").update(cardPayload).eq("id", card.id);
+          if (error) throw error;
         } else {
-          await supabase.from("hero_cards").insert(cardPayload);
+          const { error } = await supabase.from("hero_cards").insert(cardPayload);
+          if (error) throw error;
         }
       }
 
       toast({
         title: "Success",
-        description: "Hero section updated successfully",
+        description: "Hero section saved successfully",
       });
-    } catch (error) {
+      
+      await fetchData();
+    } catch (error: any) {
+      console.error("Save error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to save hero section",
+        title: "Failed to save",
+        description: error.message || "Please check your permissions and try again",
       });
     } finally {
       setSaving(false);
