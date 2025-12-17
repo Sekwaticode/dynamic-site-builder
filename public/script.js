@@ -7,7 +7,7 @@
 const loadElement = document.querySelector("[data-preloader]");
 
 window.addEventListener("load", function () {
-  loadElement.classList.add("loaded");
+  if (loadElement) loadElement.classList.add("loaded");
 });
 
 /**
@@ -22,7 +22,7 @@ const toggleNavbar = function () {
   navToggler.classList.toggle("active");
 }
 
-navToggler.addEventListener("click", toggleNavbar);
+if (navToggler) navToggler.addEventListener("click", toggleNavbar);
 
 /**
  *  #HEADER
@@ -33,11 +33,11 @@ const backTopBtn = document.querySelector("[data-go-top-btn]");
 
 window.addEventListener("scroll", function () {
   if (window.scrollY >= 100) {
-    header.classList.add("active");
-    backTopBtn.classList.add("active");
+    if (header) header.classList.add("active");
+    if (backTopBtn) backTopBtn.classList.add("active");
   } else {
-    header.classList.remove("active");
-    backTopBtn.classList.remove("active");
+    if (header) header.classList.remove("active");
+    if (backTopBtn) backTopBtn.classList.remove("active");
   }
 });
 
@@ -98,7 +98,7 @@ Promise.all([
 
     // Feature cards
     cards.forEach((card, i) => {
-      const el = document.getElementById(`hero-card-${i+1}`);
+      const el = document.getElementById(`hero-card-${i + 1}`);
       if (!el) return;
       const subtitleEl = el.querySelector(".card-subtitle");
       const titleEl = el.querySelector(".card-title");
@@ -179,7 +179,7 @@ fetch(`${SUPABASE_URL}/rest/v1/statistics?select=*&order=display_order.asc`, { h
   .then(data => {
     const container = document.getElementById("stats-list");
     if (!container) return;
-    
+
     container.innerHTML = data.map(stat => `
       <li class="stats-card">
         <h3 class="h3 card-title">${stat.number}</h3>
@@ -244,7 +244,7 @@ Promise.all([
   .catch(err => console.error("Error loading objectives:", err));
 
 /* ----------------------------
-   CTA SECTION
+   CTA SECTION (Homepage)
 ----------------------------- */
 fetch(`${SUPABASE_URL}/rest/v1/cta_section?select=*`, { headers })
   .then(res => res.json())
@@ -314,7 +314,7 @@ Promise.all([
   .catch(err => console.error("Error loading service categories:", err));
 
 /* ----------------------------
-   PAGE-SPECIFIC CTA SECTIONS
+   PAGE-SPECIFIC CTA SECTIONS (Services, Contact pages)
 ----------------------------- */
 fetch(`${SUPABASE_URL}/rest/v1/page_cta_sections?select=*`, { headers })
   .then(res => res.json())
@@ -400,7 +400,7 @@ fetch(`${SUPABASE_URL}/rest/v1/photobiomodulation_cards?select=*&order=display_o
               </li>
               <li class="card-meta-item">
                 <ion-icon name="chatbubble-outline"></ion-icon>
-                <span class="span">${item.comments_count} Comments</span>
+                <span class="span">${item.comments_count} Recommendation</span>
               </li>
             </ul>
             <h3 class="h5">
