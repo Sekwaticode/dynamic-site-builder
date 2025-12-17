@@ -336,6 +336,42 @@ export type Database = {
         }
         Relationships: []
       }
+      page_cta_sections: {
+        Row: {
+          button_text: string | null
+          button_url: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          page_name: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          button_text?: string | null
+          button_url?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          page_name: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          button_text?: string | null
+          button_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          page_name?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       photobio_section_settings: {
         Row: {
           created_at: string | null
@@ -425,6 +461,77 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      service_categories: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          page: string
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          page?: string
+          subtitle: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          page?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_items: {
+        Row: {
+          author: string
+          category_id: string | null
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string
+          category_id?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category_id?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_settings: {
         Row: {

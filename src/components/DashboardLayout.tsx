@@ -15,6 +15,8 @@ import {
   Settings,
   LogOut,
   HeartPulse,
+  Stethoscope,
+  MousePointerClick,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
@@ -70,6 +72,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { to: "/dashboard/statistics", icon: BarChart3, label: "Statistics" },
     { to: "/dashboard/objectives", icon: Target, label: "Objectives" },
     { to: "/dashboard/cta", icon: Megaphone, label: "CTA Section" },
+    { to: "/dashboard/services", icon: Stethoscope, label: "Services Page" },
+    { to: "/dashboard/page-ctas", icon: MousePointerClick, label: "Page CTAs" },
     { to: "/dashboard/photobio", icon: Lightbulb, label: "Photobiomodulation" },
     { to: "/dashboard/contact", icon: Phone, label: "Contact Details" },
     { to: "/dashboard/footer", icon: FileText, label: "Footer Content" },

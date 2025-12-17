@@ -16,6 +16,8 @@ import PhotobioSection from "./pages/PhotobioSection";
 import ContactSection from "./pages/ContactSection";
 import FooterSection from "./pages/FooterSection";
 import SiteSettings from "./pages/SiteSettings";
+import ServicesSection from "./pages/ServicesSection";
+import PageCTASection from "./pages/PageCTASection";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/dashboard/statistics" element={<StatisticsSection />} />
           <Route path="/dashboard/objectives" element={<ObjectivesSection />} />
           <Route path="/dashboard/cta" element={<CTASection />} />
+          <Route path="/dashboard/services" element={<ServicesSection />} />
+          <Route path="/dashboard/page-ctas" element={<PageCTASection />} />
           <Route path="/dashboard/photobio" element={<PhotobioSection />} />
           <Route path="/dashboard/contact" element={<ContactSection />} />
           <Route path="/dashboard/footer" element={<FooterSection />} />
