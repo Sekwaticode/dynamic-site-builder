@@ -266,6 +266,118 @@ fetch(`${SUPABASE_URL}/rest/v1/cta_section?select=*`, { headers })
   .catch(err => console.error("Error loading CTA section:", err));
 
 /* ----------------------------
+   SERVICE CATEGORIES & ITEMS (Services Page)
+----------------------------- */
+Promise.all([
+  fetch(`${SUPABASE_URL}/rest/v1/service_categories?select=*&order=display_order.asc`, { headers }),
+  fetch(`${SUPABASE_URL}/rest/v1/service_items?select=*&order=display_order.asc`, { headers })
+]).then(responses => Promise.all(responses.map(r => r.json())))
+  .then(([categories, items]) => {
+    categories.forEach((category, index) => {
+      const categoryItems = items.filter(item => item.category_id === category.id);
+      
+      // Try to find container by index (service-category-0, service-category-1, etc.)
+      const container = document.getElementById(`service-category-${index}`);
+      if (container) {
+        const titleEl = container.querySelector('.section-title');
+        if (titleEl) titleEl.innerHTML = category.title;
+        
+        const subtitleEl = container.querySelector('.section-subtitle');
+        if (subtitleEl) subtitleEl.innerHTML = category.subtitle;
+        
+        const listEl = container.querySelector('.blog-list');
+        if (listEl && categoryItems.length > 0) {
+          listEl.innerHTML = categoryItems.map(item => `
+            <li>
+              <div class="blog-card">
+                <figure class="card-banner img-holder" style="--width: 770; --height: 550">
+                  <img src="${item.image_url || ''}" width="770" height="550" loading="lazy" alt="${item.title}" class="img-cover" />
+                </figure>
+                <div class="card-content">
+                  <ul class="card-meta-list">
+                    <li class="card-meta-item">
+                      <ion-icon name="person-outline"></ion-icon>
+                      <span class="span">${item.author}</span>
+                    </li>
+                  </ul>
+                  <h3 class="h5">
+                    <a href="#" class="card-title">${item.title}</a>
+                  </h3>
+                </div>
+              </div>
+            </li>
+          `).join("");
+        }
+      }
+    });
+  })
+  .catch(err => console.error("Error loading service categories:", err));
+
+/* ----------------------------
+   PAGE-SPECIFIC CTA SECTIONS
+----------------------------- */
+fetch(`${SUPABASE_URL}/rest/v1/page_cta_sections?select=*`, { headers })
+  .then(res => res.json())
+  .then(data => {
+    data.forEach(cta => {
+      // Services top CTA
+      if (cta.page_name === 'services_top') {
+        const titleEl = document.getElementById('services-cta-title');
+        if (titleEl) titleEl.innerHTML = cta.title;
+        
+        const textEl = document.getElementById('services-cta-text');
+        if (textEl) textEl.innerHTML = cta.description;
+        
+        if (cta.image_url) {
+          const imgEl = document.getElementById('services-cta-image');
+          if (imgEl) imgEl.src = cta.image_url;
+        }
+        
+        const btnEl = document.getElementById('services-cta-btn');
+        if (btnEl && cta.button_text) {
+          btnEl.innerHTML = `<span class="span">${cta.button_text}</span><ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>`;
+          btnEl.href = cta.button_url || '#';
+        }
+      }
+      
+      // Photobiomodulation CTA on services page
+      if (cta.page_name === 'services_photobio') {
+        const titleEl = document.getElementById('photobio-cta-title');
+        if (titleEl) titleEl.innerHTML = cta.title;
+        
+        const textEl = document.getElementById('photobio-cta-text');
+        if (textEl) textEl.innerHTML = cta.description;
+        
+        if (cta.image_url) {
+          const imgEl = document.getElementById('photobio-cta-image');
+          if (imgEl) imgEl.src = cta.image_url;
+        }
+      }
+      
+      // Contact page CTA
+      if (cta.page_name === 'contact') {
+        const titleEl = document.getElementById('contact-cta-title');
+        if (titleEl) titleEl.innerHTML = cta.title;
+        
+        const textEl = document.getElementById('contact-cta-text');
+        if (textEl) textEl.innerHTML = cta.description;
+        
+        if (cta.image_url) {
+          const imgEl = document.getElementById('contact-cta-image');
+          if (imgEl) imgEl.src = cta.image_url;
+        }
+        
+        const btnEl = document.getElementById('contact-cta-btn');
+        if (btnEl && cta.button_text) {
+          btnEl.innerHTML = `<span class="span">${cta.button_text}</span><ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>`;
+          btnEl.href = cta.button_url || '#';
+        }
+      }
+    });
+  })
+  .catch(err => console.error("Error loading page CTAs:", err));
+
+/* ----------------------------
    THERAPY / BLOG CARDS (Photobiomodulation)
 ----------------------------- */
 fetch(`${SUPABASE_URL}/rest/v1/photobiomodulation_cards?select=*&order=display_order.asc`, { headers })
